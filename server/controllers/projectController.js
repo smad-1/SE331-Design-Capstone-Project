@@ -38,4 +38,37 @@ const newProject = projectModel.createProject(req.body);
  res.status(201).json({ success: true, data: newProject });
 }
 
-module.exports = { getProjects, getProject, createProject };
+function updateProject(req, res) {
+  if (!req.body.title) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "Title is required" 
+    });
+  }
+ 
+  const updated = projectModel.updateProject(req.params.id, req.body);
+ 
+  if (!updated) {
+    return res.status(404).json({
+      success: false,
+      message: `No project found with id ${req.params.id}`,
+    });
+  }
+ 
+  res.status(200).json({ success: true, data: updated });
+}
+
+function deleteProject(req, res) {
+  const deleted = projectModel.deleteProject(req.params.id);
+ 
+  if (!deleted) {
+    return res.status(404).json({
+      success: false,
+      message: `No project found with id ${req.params.id}`,
+    });
+  }
+ 
+  res.status(200).json({ success: true, message: "Project deleted" });
+}
+
+module.exports = { getProjects, getProject, createProject, updateProject, deleteProject };

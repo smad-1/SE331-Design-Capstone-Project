@@ -65,6 +65,8 @@ body{
   padding: 20px;
   text-align: center;
   border-radius: 8px;
+  text-decoration: none;
+  color: white;
 }
 
 .signup-form{

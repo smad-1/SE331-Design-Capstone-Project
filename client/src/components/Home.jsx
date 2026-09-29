@@ -1,15 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { getProjects } from "../api/projectService";
+import { Link } from "react-router-dom"
 
 const Home = () => {
-    const projects = [
-    {id: 1, title:"project 1"}, 
-    {id: 2, title:"project 2"},
-    {id: 3, title:"project 3"},
-    {id: 4, title:"project 4"},
-    {id: 5, title:"project 5"}
-];
-
     const [fixed, setFixed] =useState("fixed");
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    async function fetchProjects() {
+        try {
+            setLoading(true);
+            const result = await getProjects(); 
+            setProjects(result.data);
+            setError(null);
+        } catch (err) {
+            setError("Could not load projects. Is the backend running?");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {    
+        fetchProjects();
+    }, []); // empty dependency array -> runs once, when the component mounts
 
   return (
     <div>
@@ -22,14 +36,23 @@ const Home = () => {
         
 
         <h2>Projects</h2>
-        <div className='card-list'>
-            {projects.map((project) =>(
-                <div key={project.id} className='card'> {project.title} </div>
-            ))}
-        </div>
+        {loading && <p>Loading projects...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         
+        {!loading && !error && ( 
+            <div className='card-list'>
+                {projects.map((project) =>(
+                    <Link 
+                    to={`/projects/${project.id}`} 
+                    className='card' 
+                    key={project.id}>
+                        {project.title}
+                    </Link>
+                ))}
+            </div>
+        )}
     </div>
-  )
+  );
 }
 
 export default Home
