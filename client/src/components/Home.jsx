@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getProjects } from "../api/projectService";
+import { getProjects, createProject } from "../api/projectService";
 import { Link } from "react-router-dom"
 
 const Home = () => {
@@ -7,6 +7,7 @@ const Home = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [title, setTitle] = useState("");
 
     async function fetchProjects() {
         try {
@@ -24,6 +25,16 @@ const Home = () => {
     useEffect(() => {    
         fetchProjects();
     }, []); // empty dependency array -> runs once, when the component mounts
+
+    async function handleCreate(e){
+        e.preventDefault();
+        try {
+            const result = await createProject({title});
+            fetchProjects();
+        } catch (error) {
+            alert("Could not add project");
+        }
+    }
 
   return (
     <div>
@@ -43,14 +54,20 @@ const Home = () => {
             <div className='card-list'>
                 {projects.map((project) =>(
                     <Link 
-                    to={`/projects/${project.id}`} 
+                    to={`/projects/${project._id}`} 
                     className='card' 
-                    key={project.id}>
+                    key={project._id}>
                         {project.title}
                     </Link>
                 ))}
             </div>
         )}
+
+        <h2>Create a new project</h2>
+        <form onSubmit={handleCreate}>
+            <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder='enter title'/>
+            <button type='submit'>Create</button>
+        </form>
     </div>
   );
 }

@@ -10,6 +10,11 @@ export async function getProjectById(id) {
   return response.data;
 }
 
+export async function createProject(projectData){
+  const response = await axiosClient.post("/projects", projectData);
+  return response.data;
+}
+
 export async function updateProject(id, projectData) {
   const response = await axiosClient.put(`/projects/${id}`, projectData);
   return response.data; // { success, data }

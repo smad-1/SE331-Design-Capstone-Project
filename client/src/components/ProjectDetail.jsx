@@ -51,7 +51,7 @@ const ProjectDetail = () => {
     <div>
         <Link to="/">Back to Projects</Link>
         <h2>{project.title}</h2>
-        <p>Project ID: {project.id} </p>
+        <p>Project ID: {project._id} </p>
 
         <form onSubmit={handleUpdate}>
             <input value={title} onChange={(e) => setTitle(e.target.value)} />
